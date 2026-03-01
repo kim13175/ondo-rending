@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ONDO · Gwangalli</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Noto+Sans+KR:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --cream:       #F5F0E8;
+  --cream-mid:   #EDE7DC;
+  --cream-deep:  #E3DAC9;
+  --brown:       #2A1F1A;
+  --brown-2:     #5C4338;
+  --brown-3:     #8B6E63;
+  --brown-4:     #B8A090;
+  --brown-pin:   #7A5C52;   /* 지도 핀 색상 */
+  --white:       #FDFCFA;
+  --border:      rgba(42,31,26,.10);
+  --border-md:   rgba(42,31,26,.18);
+  --border-lg:   rgba(42,31,26,.28);
+
+  --serif:  'Cormorant Garamond', Georgia, serif;
+  --sans:   'DM Sans', sans-serif;
+  --ko:     'Noto Sans KR', sans-serif;
+}
+
+/* ═══════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { width:100%; height:100%; overflow:hidden; background:var(--cream); color:var(--brown); font-family:var(--ko); }
+
+/* ═══════════════════════════════════════════
+   SCREEN SYSTEM
+═══════════════════════════════════════════ */
+.screen {
+  position:fixed; inset:0;
+  display:flex; flex-direction:column;
+  background:var(--cream);
+  opacity:0; pointer-events:none;
+  transform:translateY(14px);
+  transition: opacity .38s cubic-bezier(.4,0,.2,1),
+              transform .38s cubic-bezier(.4,0,.2,1);
+}
+.screen.active  { opacity:1; pointer-events:all; transform:translateY(0); }
+.screen.exit    { opacity:0; transform:translateY(-10px); }
+
+/* ═══════════════════════════════════════════
+   HOME BUTTON
+═══════════════════════════════════════════ */
+#home-btn {
+  position:fixed; top:20px; left:20px; z-index:9999;
+  width:32px; height:32px;
+  background:var(--cream-mid);
+  border:1px solid var(--border-md);
+  border-radius:50%;
+  display:none; align-items:center; justify-content:center;
+  cursor:pointer; font-size:13px; color:var(--brown-2);
+  transition:background .18s;
+}
+#home-btn.visible { display:flex; }
+#home-btn:active  { background:var(--cream-deep); }
+
+/* ═══════════════════════════════════════════
+   SHARED: ONDO LOGO BLOCK
+═══════════════════════════════════════════ */
+.logo-block { display:flex; flex-direction:column; align-items:flex-start; gap:3px; }
+.logo-block.center { align-items:center; }
+.logo-wordmark {
+  font-family:var(--serif);
+  font-size:28px; font-weight:400;
+  letter-spacing:.20em;
+  color:var(--brown); line-height:1;
+}
+.logo-wordmark.lg { font-size:44px; }
+.logo-tagline {
+  font-family:var(--sans);
+  font-size:8px; font-weight:400;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--brown-4);
+}
+
+/* ═══════════════════════════════════════════
+   SCREEN 0 — INTRO
+═══════════════════════════════════════════ */
+#screen-intro { justify-content:space-between; }
+
+/* grain overlay */
+#screen-intro::before {
+  content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+  opacity:.6;
+}
+
+.intro-top { position:relative; z-index:1; padding:56px 28px 0; display:flex; flex-direction:column; align-items:center; }
+
+.intro-rule { width:32px; height:1px; background:var(--border-lg); margin:20px 0; }
+
+.intro-headline {
+  font-family:var(--serif); font-size:38px; font-weight:300;
+  line-height:1.22; text-align:center; letter-spacing:-.01em; color:var(--brown);
+}
+.intro-headline em { font-style:italic; font-weight:400; }
+
+.intro-body {
+  margin-top:14px;
+  font-family:var(--ko); font-size:13px; font-weight:300;
+  color:var(--brown-3); text-align:center; line-height:1.85;
+}
+.intro-body strong { font-weight:500; color:var(--brown-2); }
+
+.intro-location {
+  margin-top:22px;
+  display:inline-flex; align-items:center; gap:7px;
+  border:1px solid var(--border-md); border-radius:20px;
+  padding:5px 14px;
+  font-family:var(--sans); font-size:10px; letter-spacing:.10em;
+  color:var(--brown-3);
+}
+.loc-pin { width:6px; height:6px; background:var(--brown-pin); border-radius:50%; }
+
+.intro-mid {
+  flex:1; position:relative; z-index:1;
+  display:flex; align-items:center; justify-content:center;
+}
+.intro-ticker {
+  display:flex; flex-direction:column; align-items:center; gap:8px; opacity:.25;
+}
+.ticker-line {
+  width:1px; height:44px; background:var(--brown);
+  animation: tickerPulse 2.2s ease-in-out infinite;
+}
+@keyframes tickerPulse {
+  0%,100% { transform:scaleY(1); opacity:.6; }
+  50%      { transform:scaleY(.5); opacity:.2; }
+}
+.ticker-label {
+  font-family:var(--sans); font-size:9px; letter-spacing:.20em;
+  text-transform:uppercase; color:var(--brown); transform:rotate(90deg);
+  white-space:nowrap; margin-top:6px;
+}
+
+.intro-bottom { position:relative; z-index:1; padding:0 28px 52px; display:flex; flex-direction:column; gap:10px; }
+
+.btn-primary {
+  background:var(--brown); color:var(--cream); border:none; border-radius:3px;
+  padding:17px 18px; font-family:var(--ko); font-size:14px; font-weight:500;
+  letter-spacing:.04em; cursor:pointer;
+  display:flex; align-items:center; justify-content:space-between;
+  transition:background .2s, transform .14s;
+}
+.btn-primary:active { background:var(--brown-2); transform:scale(.99); }
+.btn-arrow { font-size:16px; transition:transform .22s; }
+.btn-primary:hover .btn-arrow { transform:translateX(4px); }
+
+.intro-note { font-family:var(--sans); font-size:10px; letter-spacing:.06em; color:var(--brown-4); text-align:center; }
+
+/* ═══════════════════════════════════════════
+   SCREEN 1 & 2 — QUESTIONS
+═══════════════════════════════════════════ */
+.q-topbar {
+  flex-shrink:0; padding:48px 28px 0;
+  display:flex; flex-direction:column; gap:0;
+}
+
+.q-nav {
+  display:flex; justify-content:space-between; align-items:flex-end;
+  margin-bottom:28px;
+}
+.q-step {
+  font-family:var(--sans); font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--brown-4);
+}
+
+/* progress bar */
+.q-bar { height:1px; background:var(--border); margin-bottom:30px; position:relative; }
+.q-bar-fill { position:absolute; left:0; top:0; height:100%; background:var(--brown); transition:width .55s cubic-bezier(.4,0,.2,1); }
+
+.q-headline {
+  font-family:var(--serif); font-size:34px; font-weight:300;
+  line-height:1.22; letter-spacing:-.01em; color:var(--brown);
+  margin-bottom:8px;
+}
+.q-headline em { font-style:italic; }
+.q-caption { font-family:var(--ko); font-size:11px; font-weight:300; color:var(--brown-4); letter-spacing:.03em; margin-bottom:28px; }
+
+/* cards */
+.q-list { flex:1; overflow-y:auto; padding:0 28px 36px; display:flex; flex-direction:column; gap:8px; }
+
+.q-card {
+  border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px; background:var(--white);
+  cursor:pointer; display:flex; align-items:center; gap:16px;
+  transition: border-color .2s, background .2s, transform .12s;
+  position:relative; overflow:hidden;
+}
+.q-card:active { transform:scale(.99); }
+.q-card.selected { background:var(--brown); border-color:var(--brown); }
+
+.card-num {
+  font-family:var(--serif); font-size:22px; font-weight:300;
+  color:var(--brown-4); flex-shrink:0; width:24px;
+  transition:color .2s;
+}
+.card-body { flex:1; }
+.card-ko {
+  font-family:var(--ko); font-size:15px; font-weight:500; color:var(--brown);
+  display:block; margin-bottom:2px; transition:color .2s;
+}
+.card-en {
+  font-family:var(--sans); font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--brown-4); display:block; transition:color .2s;
+}
+.card-desc {
+  font-size:11px; font-weight:300; color:var(--brown-4);
+  display:block; margin-top:3px; transition:color .2s;
+}
+.card-arr { font-size:13px; color:var(--border-lg); transition:color .2s, transform .2s; }
+
+.q-card.selected .card-num,
+.q-card.selected .card-ko,
+.q-card.selected .card-en,
+.q-card.selected .card-desc { color:var(--cream-mid); }
+.q-card.selected .card-arr  { color:rgba(245,240,232,.35); transform:translateX(2px); }
+
+/* ═══════════════════════════════════════════
+   SCREEN 3 — LOADING
+═══════════════════════════════════════════ */
+#screen-loading { justify-content:center; align-items:center; gap:0; }
+
+.loading-wordmark {
+  font-family:var(--serif); font-size:26px; font-weight:300;
+  letter-spacing:.22em; color:var(--brown-3); margin-bottom:44px;
+}
+.loading-spinner {
+  width:40px; height:40px;
+  border:1.5px solid var(--border);
+  border-top-color:var(--brown);
+  border-radius:50%;
+  animation:spin 1.1s linear infinite;
+  margin-bottom:36px;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+.loading-texts { overflow:hidden; height:18px; display:flex; flex-direction:column; align-items:center; }
+.loading-text {
+  font-family:var(--ko); font-size:11px; font-weight:300;
+  letter-spacing:.06em; color:var(--brown-4);
+  opacity:0; transition:opacity .4s; white-space:nowrap;
+}
+.loading-text.visible { opacity:1; }
+
+/* ═══════════════════════════════════════════
+   SCREEN 4 — RESULT
+═══════════════════════════════════════════ */
+#screen-result { overflow-y:auto; -webkit-overflow-scrolling:touch; }
+
+/* result animate */
+.result-animate { opacity:0; transform:translateY(14px); transition:opacity .5s, transform .5s; }
+.result-animate.in { opacity:1; transform:translateY(0); }
+
+/* header */
+.res-header {
+  padding:48px 28px 26px;
+  border-bottom:1px solid var(--border);
+}
+.res-eyebrow {
+  display:flex; align-items:center; gap:10px; margin-bottom:18px;
+}
+.res-logo-sm {
+  font-family:var(--serif); font-size:12px; letter-spacing:.18em; color:var(--brown-4);
+}
+.res-line { flex:1; height:1px; background:var(--border); }
+.res-tag  {
+  font-family:var(--sans); font-size:9px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--brown-4);
+}
+.res-name {
+  font-family:var(--serif); font-size:40px; font-weight:400;
+  line-height:1.12; letter-spacing:-.01em; color:var(--brown);
+  margin-bottom:8px;
+}
+.res-category {
+  font-family:var(--sans); font-size:10px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--brown-3);
+}
+
+/* quote */
+.res-quote-wrap { padding:22px 28px; border-bottom:1px solid var(--border); }
+.res-quote {
+  font-family:var(--serif); font-size:18px; font-weight:300;
+  font-style:italic; line-height:1.6; color:var(--brown);
+  padding-left:14px; position:relative;
+}
+.res-quote::before {
+  content:''; position:absolute; left:0; top:5px; bottom:5px;
+  width:2px; background:var(--brown-pin); border-radius:1px;
+}
+
+/* chips grid */
+.res-chips {
+  display:grid; grid-template-columns:1fr 1fr;
+  background:var(--border); gap:1px;
+  border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+}
+.res-chip { padding:15px 20px; background:var(--cream); display:flex; flex-direction:column; gap:4px; }
+.chip-lbl {
+  font-family:var(--sans); font-size:9px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--brown-4);
+}
+.chip-val { font-family:var(--ko); font-size:13px; font-weight:500; color:var(--brown); }
+
+/* why */
+.res-why { padding:22px 28px; border-bottom:1px solid var(--border); }
+.res-why-lbl {
+  font-family:var(--sans); font-size:9px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--brown-4); margin-bottom:16px; display:block;
+}
+.why-item { display:flex; align-items:flex-start; gap:12px; margin-bottom:10px; }
+.why-item:last-child { margin-bottom:0; }
+.why-dot {
+  width:5px; height:5px; background:var(--brown-pin);
+  border-radius:50%; flex-shrink:0; margin-top:7px;
+}
+.why-text { font-size:13px; font-weight:300; color:var(--brown); line-height:1.65; }
+
+/* fb hint */
+.res-hint {
+  padding:14px 28px;
+  font-size:11px; font-weight:300; color:var(--brown-4);
+  border-bottom:1px solid var(--border); line-height:1.7;
+}
+.res-hint strong { color:var(--brown-2); font-weight:500; }
+
+/* cta */
+.res-cta { padding:20px 28px 44px; display:flex; flex-direction:column; gap:9px; }
+
+.btn-map {
+  background:var(--brown); color:var(--cream); border:none; border-radius:3px;
+  padding:17px 20px; font-family:var(--ko); font-size:14px; font-weight:500;
+  letter-spacing:.04em; cursor:pointer;
+  display:flex; justify-content:space-between; align-items:center;
+  transition:background .2s, transform .14s;
+}
+.btn-map:active { background:var(--brown-2); transform:scale(.99); }
+
+.btn-feedback {
+  background:transparent; color:var(--brown-2);
+  border:1px solid var(--border-md); border-radius:3px;
+  padding:14px 20px; font-family:var(--ko); font-size:13px; font-weight:400;
+  cursor:pointer; display:flex; justify-content:space-between; align-items:center;
+  transition:background .18s;
+}
+.btn-feedback:active { background:var(--cream-mid); }
+
+.btn-ghost {
+  background:transparent; color:var(--brown-4);
+  border:none; padding:10px;
+  font-family:var(--ko); font-size:12px; font-weight:300;
+  cursor:pointer; text-align:center; letter-spacing:.03em;
+}
+
+/* ═══════════════════════════════════════════
+   SCREEN 5 — FEEDBACK
+═══════════════════════════════════════════ */
+#screen-feedback { overflow-y:auto; }
+
+.fb-hdr {
+  padding:48px 28px 22px; border-bottom:1px solid var(--border);
+}
+.fb-eyebrow {
+  font-family:var(--sans); font-size:9px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--brown-4); display:block; margin-bottom:12px;
+}
+.fb-headline {
+  font-family:var(--serif); font-size:30px; font-weight:300;
+  line-height:1.28; color:var(--brown);
+}
+.fb-headline em { font-style:italic; }
+.fb-sub {
+  margin-top:8px; font-size:12px; font-weight:300;
+  color:var(--brown-4); line-height:1.75;
+}
+
+/* visit btns */
+.visit-btns { padding:22px 28px; display:flex; flex-direction:column; gap:9px; border-bottom:1px solid var(--border); }
+.visit-btn {
+  padding:16px 18px; border-radius:3px; cursor:pointer;
+  font-family:var(--ko); display:flex; align-items:center; gap:14px;
+  transition:all .18s; text-align:left; font-size:14px; font-weight:500;
+}
+.visit-btn:active { transform:scale(.99); }
+.visit-btn.yes { background:var(--brown); color:var(--cream); border:1px solid var(--brown); }
+.visit-btn.no  { background:transparent; color:var(--brown-2); border:1px solid var(--border-md); }
+.vb-icon { font-size:16px; flex-shrink:0; }
+.vb-body { flex:1; }
+.vb-main { display:block; }
+.vb-sub  { display:block; font-size:11px; font-weight:300; opacity:.55; margin-top:2px; }
+
+/* sat */
+.sat-wrap { padding:22px 28px; display:none; border-bottom:1px solid var(--border); }
+.sat-wrap.show { display:block; }
+.sat-eyebrow {
+  font-family:var(--sans); font-size:9px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--brown-4); display:block; margin-bottom:14px;
+}
+.sat-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+.sat-btn {
+  border:1px solid var(--border); border-radius:3px;
+  padding:15px 6px; background:var(--white);
+  cursor:pointer; text-align:center;
+  transition:all .18s; font-family:var(--ko);
+}
+.sat-btn:active { transform:scale(.97); }
+.sat-btn.on { border-color:var(--brown); background:var(--brown); }
+.sat-btn.on .sat-lb { color:var(--cream); }
+.sat-ej { font-size:20px; display:block; margin-bottom:5px; }
+.sat-lb { font-size:11px; color:var(--brown-3); }
+
+/* insta banner */
+.insta-banner {
+  margin:0 28px 20px; display:none;
+  background:var(--cream-mid); border:1px solid var(--border-md); border-radius:3px; padding:20px;
+}
+.insta-banner.show { display:block; }
+.insta-eyebrow {
+  font-family:var(--sans); font-size:9px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--brown-3); display:block; margin-bottom:10px;
+}
+.insta-body { font-size:13px; font-weight:300; color:var(--brown); line-height:1.75; margin-bottom:14px; }
+.insta-tag-pill {
+  display:inline-block; background:var(--brown); color:var(--cream);
+  padding:2px 10px; border-radius:12px;
+  font-family:var(--sans); font-size:11px; font-weight:500;
+}
+.btn-insta {
+  display:block; width:100%; background:var(--brown); color:var(--cream);
+  border:none; border-radius:3px; padding:14px;
+  font-family:var(--ko); font-size:13px; font-weight:500;
+  cursor:pointer; letter-spacing:.04em; margin-top:12px;
+  transition:background .18s;
+}
+.btn-insta:active { background:var(--brown-2); }
+
+/* reason chips */
+.reason-wrap { padding:22px 28px; display:none; }
+.reason-wrap.show { display:block; }
+.reason-eyebrow {
+  font-family:var(--sans); font-size:9px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--brown-4); display:block; margin-bottom:14px;
+}
+.reason-chips { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:18px; }
+.rc {
+  background:var(--white); border:1px solid var(--border);
+  border-radius:16px; padding:6px 13px;
+  font-family:var(--ko); font-size:12px; color:var(--brown-3);
+  cursor:pointer; transition:all .15s;
+}
+.rc.on { background:var(--brown); border-color:var(--brown); color:var(--cream); }
+.btn-submit {
+  width:100%; background:var(--brown); color:var(--cream);
+  border:none; border-radius:3px; padding:15px;
+  font-family:var(--ko); font-size:14px; font-weight:500;
+  cursor:pointer; letter-spacing:.04em; transition:background .18s;
+}
+.btn-submit:active { background:var(--brown-2); }
+
+/* done */
+.fb-done { padding:28px; display:none; }
+.fb-done.show { display:block; }
+.fb-done-inner {
+  background:var(--cream-mid); border:1px solid var(--border);
+  border-radius:3px; padding:36px 24px; text-align:center;
+}
+.done-ej { font-size:34px; display:block; margin-bottom:12px; }
+.done-txt { font-size:13px; font-weight:300; color:var(--brown-3); line-height:1.8; }
+
+/* go home */
+.fb-gohome { padding:0 28px 44px; text-align:center; }
+.fb-gohome button {
+  background:none; border:1px solid var(--border);
+  color:var(--brown-4); font-family:var(--ko); font-size:11px;
+  padding:7px 18px; border-radius:16px; cursor:pointer;
+  letter-spacing:.04em; transition:background .18s;
+}
+.fb-gohome button:active { background:var(--cream-mid); }
+
+/* mood badge */
+.mood-badge {
+  position:fixed; top:18px; right:20px; z-index:9999;
+  background:var(--brown); color:var(--cream);
+  font-family:var(--sans); font-size:10px; letter-spacing:.10em;
+  padding:5px 12px; border-radius:16px;
+  display:none; align-items:center; gap:5px;
+}
+.mood-badge.show { display:flex; }
+.mood-dot { width:5px; height:5px; background:var(--cream-deep); border-radius:50%; }
+
+.res-photo-wrap {
+  padding: 0 20px;
+  margin-bottom: 20px;
+}
+.res-photo-wrap img {
+  width: 100%;
+  border-radius: 12px;
+  object-fit: contain;
+  max-height: 240px;
+}
+
+</style>
+</head>
+<body>
+
+<button id="home-btn" onclick="goHome()">←</button>
+
+<!-- ═══════ SCREEN 0: INTRO ═══════ -->
+<div class="screen active" id="screen-intro">
+
+  <div class="intro-top">
+    <div class="logo-block center">
+      <div class="logo-wordmark lg">ONDO</div>
+      <div class="logo-tagline">Culinary Lifestyle</div>
+    </div>
+    <div class="intro-rule"></div>
+    <h1 class="intro-headline">오늘 어디<br><em>갈지 모르겠어?</em></h1>
+    <p class="intro-body">질문 <strong>2개</strong>만 답하면<br>지금 딱 맞는 곳 <strong>하나</strong> 골라줄게.</p>
+    <div class="intro-location">
+      <span class="loc-pin"></span>
+      Gwangalli · Busan
+    </div>
+  </div>
+
+  <div class="intro-mid">
+    <div class="intro-ticker">
+      <div class="ticker-line"></div>
+      <span class="ticker-label">scroll</span>
+    </div>
+  </div>
+
+  <div class="intro-bottom">
+    <button class="btn-primary" onclick="goTo('screen-q1')">
+      지금 시작하기
+      <span class="btn-arrow">→</span>
+    </button>
+    <span class="intro-note">5초면 충분해요</span>
+  </div>
+
+</div>
+
+<!-- ═══════ SCREEN 1: Q1 ═══════ -->
+<div class="screen" id="screen-q1">
+  <div class="q-topbar">
+    <div class="q-nav">
+      <div class="logo-block">
+        <div class="logo-wordmark">ONDO</div>
+        <div class="logo-tagline">Culinary Lifestyle</div>
+      </div>
+      <span class="q-step">01 / 02</span>
+    </div>
+    <div class="q-bar"><div class="q-bar-fill" style="width:25%"></div></div>
+    <h2 class="q-headline">오늘 데이트<br><em>몇 차예요?</em></h2>
+    <p class="q-caption">지금 상황에 맞는 곳을 찾아드릴게요</p>
+  </div>
+  <div class="q-list">
+    <div class="q-card" onclick="selectQ1('1차', this)">
+      <span class="card-num">I</span>
+      <div class="card-body">
+        <span class="card-ko">1차 — 식사</span>
+        <span class="card-en">Dinner First</span>
+        <span class="card-desc">든든하게 오늘을 시작해요</span>
+      </div>
+      <span class="card-arr">→</span>
+    </div>
+    <div class="q-card" onclick="selectQ1('2차', this)">
+      <span class="card-num">II</span>
+      <div class="card-body">
+        <span class="card-ko">2차 — 술 / 카페</span>
+        <span class="card-en">After Dinner</span>
+        <span class="card-desc">분위기 있게 이어가고 싶을 때</span>
+      </div>
+      <span class="card-arr">→</span>
+    </div>
+    <div class="q-card" onclick="selectQ1('3차', this)">
+      <span class="card-num">III</span>
+      <div class="card-body">
+        <span class="card-ko">3차+ — 늦은 밤</span>
+        <span class="card-en">Late Night</span>
+        <span class="card-desc">아직 끝내기 아쉬운 밤</span>
+      </div>
+      <span class="card-arr">→</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ SCREEN 2: Q2 ═══════ -->
+<div class="screen" id="screen-q2">
+  <div class="q-topbar">
+    <div class="q-nav">
+      <div class="logo-block">
+        <div class="logo-wordmark">ONDO</div>
+        <div class="logo-tagline">Culinary Lifestyle</div>
+      </div>
+      <span class="q-step">02 / 02</span>
+    </div>
+    <div class="q-bar"><div class="q-bar-fill" style="width:65%"></div></div>
+    <h2 class="q-headline">오늘<br><em>기분이 어때?</em></h2>
+    <p class="q-caption">지금 이 순간의 온도를 알려주세요</p>
+  </div>
+  <div class="q-list">
+    <div class="q-card" onclick="selectQ2('설레는 날', this)">
+      <span class="card-num">I</span>
+      <div class="card-body">
+        <span class="card-ko">💕 설레는 날</span>
+        <span class="card-en">Romantic</span>
+        <span class="card-desc">특별한 감성이 필요한 날</span>
+      </div>
+      <span class="card-arr">→</span>
+    </div>
+    <div class="q-card" onclick="selectQ2('편안한 날', this)">
+      <span class="card-num">II</span>
+      <div class="card-body">
+        <span class="card-ko">😌 편안한 날</span>
+        <span class="card-en">Cozy</span>
+        <span class="card-desc">편안하고 조용하게, 그냥 좋은 날</span>
+      </div>
+      <span class="card-arr">→</span>
+    </div>
+    <div class="q-card" onclick="selectQ2('특별한 날', this)">
+      <span class="card-num">III</span>
+      <div class="card-body">
+        <span class="card-ko">✨ 특별한 날</span>
+        <span class="card-en">Special</span>
+        <span class="card-desc">잊고 싶지 않은 오늘</span>
+      </div>
+      <span class="card-arr">→</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ SCREEN 3: LOADING ═══════ -->
+<div class="screen" id="screen-loading">
+  <div class="loading-wordmark">ONDO</div>
+  <div class="loading-spinner"></div>
+  <div class="loading-texts">
+    <div class="loading-text visible" id="lt0">지금 시간 · 날씨 확인 중</div>
+    <div class="loading-text" id="lt1">딱 맞는 조건 탐색 중</div>
+    <div class="loading-text" id="lt2">176곳 중 최적 장소 선정 중</div>
+    <div class="loading-text" id="lt3">거의 다 됐어요</div>
+  </div>
+</div>
+
+<!-- ═══════ SCREEN 4: RESULT ═══════ -->
+<div class="screen" id="screen-result" style="overflow-y:auto;">
+
+  <div class="res-header result-animate" id="ra-header">
+    <div class="res-eyebrow">
+      <span class="res-logo-sm">ONDO</span>
+      <div class="res-line"></div>
+      <span class="res-tag">Today's Pick</span>
+    </div>
+    <div class="res-name" id="result-name">블루밍 와인바</div>
+    <div class="res-category" id="result-category">WINE BAR · 광안리</div>
+  </div>
+
+  <div class="res-quote-wrap result-animate" id="ra-quote">
+    <div class="res-quote" id="result-quote">"분위기 있는 2차, 오늘 밤 딱 맞는 곳이에요."</div>
+  </div>
+
+  <div class="res-photo-wrap result-animate" id="ra-photo">
+    <img id="result-photo" src="" alt="" />
+  </div>
+
+  <div class="res-chips result-animate" id="ra-info">
+    <div class="res-chip"><span class="chip-lbl">거리</span><span class="chip-val" id="result-dist">도보 5분</span></div>
+    <div class="res-chip"><span class="chip-lbl">예상 대기</span><span class="chip-val" id="result-wait">없음</span></div>
+    <div class="res-chip"><span class="chip-lbl">가격대</span><span class="chip-val" id="result-price">1 – 2만원</span></div>
+    <div class="res-chip"><span class="chip-lbl">영업</span><span class="chip-val" id="result-hours">영업 중</span></div>
+  </div>
+
+  <div class="res-why result-animate" id="ra-why">
+    <span class="res-why-lbl">Why here</span>
+    <div id="result-why-items">
+      <div class="why-item"><div class="why-dot"></div><div class="why-text">2차+설레는 날 조합에 감성 조명 공간이 가장 잘 맞아요</div></div>
+      <div class="why-item"><div class="why-dot"></div><div class="why-text">지금 시간 기준 웨이팅 없이 바로 입장 가능해요</div></div>
+      <div class="why-item"><div class="why-dot"></div><div class="why-text">민락회센터에서 걸어서 3분, 이동 부담 없어요</div></div>
+    </div>
+  </div>
+
+  <div class="res-hint result-animate" id="ra-hint">
+    <strong>방문 후 피드백</strong>을 남겨주시면 다음 추천이 더 정확해져요
+  </div>
+
+  <div class="res-cta result-animate" id="ra-cta">
+    <button class="btn-map" onclick="openMap()">지금 바로 갈게요 <span>→</span></button>
+    <button class="btn-feedback" onclick="goFeedback()">다녀온 후 피드백 남기기 <span style="font-size:11px;opacity:.5;">↗</span></button>
+    <button class="btn-ghost" onclick="restart()">다른 곳 추천받기</button>
+  </div>
+
+</div>
+
+<!-- ═══════ SCREEN 5: FEEDBACK ═══════ -->
+<div class="screen" id="screen-feedback">
+
+  <div class="fb-hdr result-animate" id="fba-hdr">
+    <span class="fb-eyebrow">Feedback</span>
+    <div class="fb-headline"><em id="fb-store-name"></em><br>다녀오셨나요?</div>
+    <p class="fb-sub">솔직한 후기가 ondo를 만들어요. 30초면 돼요.</p>
+  </div>
+
+  <div class="visit-btns result-animate" id="fba-btns">
+    <button class="visit-btn yes" onclick="visitYes()">
+      <span class="vb-icon">✓</span>
+      <span class="vb-body">
+        <span class="vb-main">네, 다녀왔어요</span>
+        <span class="vb-sub">만족도 + 커피쿠폰 이벤트 참여</span>
+      </span>
+    </button>
+    <button class="visit-btn no" onclick="visitNo()">
+      <span class="vb-icon">✗</span>
+      <span class="vb-body">
+        <span class="vb-main">아니요, 안 갔어요</span>
+        <span class="vb-sub">이유 알려주시면 더 잘 맞춰드려요</span>
+      </span>
+    </button>
+  </div>
+
+  <div class="sat-wrap" id="sat-wrap">
+    <span class="sat-eyebrow">How was it</span>
+    <div class="sat-grid">
+      <button class="sat-btn" onclick="selectSat(this,'만족')"><span class="sat-ej">😍</span><span class="sat-lb">만족</span></button>
+      <button class="sat-btn" onclick="selectSat(this,'보통')"><span class="sat-ej">😐</span><span class="sat-lb">보통</span></button>
+      <button class="sat-btn" onclick="selectSat(this,'불만족')"><span class="sat-ej">😞</span><span class="sat-lb">불만족</span></button>
+    </div>
+  </div>
+
+  <div class="insta-banner" id="insta-banner">
+    <span class="insta-eyebrow">Coffee Coupon Event</span>
+    <p class="insta-body">인스타그램에 방문 사진과 함께<br><span class="insta-tag-pill">@ondo.guide</span> 를 태그하면<br>매주 추첨으로 스타벅스 아메리카노를 드려요</p>
+    <button class="btn-insta" onclick="openInsta()">인스타그램에 태그하기</button>
+  </div>
+
+  <div class="reason-wrap" id="reason-wrap">
+    <span class="reason-eyebrow">Why not</span>
+    <div class="reason-chips">
+      <button class="rc" onclick="this.classList.toggle('on')">추천이 마음에 안 들었어요</button>
+      <button class="rc" onclick="this.classList.toggle('on')">이미 가본 곳이었어요</button>
+      <button class="rc" onclick="this.classList.toggle('on')">웨이팅이 너무 길었어요</button>
+      <button class="rc" onclick="this.classList.toggle('on')">영업을 안 하고 있었어요</button>
+      <button class="rc" onclick="this.classList.toggle('on')">생각보다 멀었어요</button>
+      <button class="rc" onclick="this.classList.toggle('on')">분위기가 안 맞았어요</button>
+      <button class="rc" onclick="this.classList.toggle('on')">가격이 부담됐어요</button>
+      <button class="rc" onclick="this.classList.toggle('on')">일행이 반대했어요</button>
+      <button class="rc" onclick="this.classList.toggle('on')">다른 곳이 더 끌렸어요</button>
+    </div>
+    <button class="btn-submit" onclick="submitReasons()">의견 보내기</button>
+  </div>
+
+  <div class="fb-done" id="fb-done">
+    <div class="fb-done-inner">
+      <span class="done-ej" id="done-ej">🙏</span>
+      <p class="done-txt" id="done-txt">소중한 피드백 감사해요!<br>다음엔 더 잘 맞춰드릴게요.</p>
+    </div>
+  </div>
+
+  <div class="fb-gohome">
+    <button onclick="goHome()">← 처음으로 돌아가기</button>
+  </div>
+
+</div>
+
+<script src="./constant.js"></script>
+<script>
+Object.values(STORES).forEach(storeList => {
+  storeList.forEach(store => {
+    const file = PHOTO_MAP[store.name] || PHOTO_MAP[store.name.trim()];
+    if (file) store.photo = `${STORAGE_BASE}/${file}`;
+  });
+});
+
+// ── 상태 ──
+let q1 = '', q2 = '';
+let userLocation = null; // 사용자 GPS 좌표
+
+// 페이지 로드 즉시 위치 요청
+navigator.geolocation?.getCurrentPosition(
+  pos => {
+    userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    console.log('[ondo] 위치 확보:', userLocation);
+  },
+  err => console.warn('[ondo] 위치 거부:', err),
+  { enableHighAccuracy: true, timeout: 10000 }
+);
+
+// ── 화면 전환 ──
+function goTo(id) {
+  // 홈 버튼: 인트로 화면이 아닐 때만 표시
+  const homeBtn = document.getElementById('home-btn');
+  if (homeBtn) {
+    homeBtn.classList.toggle('visible', id !== 'screen-intro');
+  }
+  document.querySelectorAll('.screen').forEach(s => {
+    if (s.classList.contains('active')) {
+      s.classList.add('exit');
+      setTimeout(() => { s.classList.remove('active', 'exit'); }, 300);
+    }
+  });
+  setTimeout(() => {
+    const next = document.getElementById(id);
+    next.classList.add('active');
+  }, 150);
+}
+
+// ── Q1 선택 ──
+function  selectQ1(val, el) {
+  q1 = val;
+  document.querySelectorAll('#screen-q1 .q-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  addRipple(el);
+  setTimeout(() => goTo('screen-q2'), 300);
+}
+
+// ── Q2 선택 ──
+function selectQ2(val, el) {
+  q2 = val;
+  document.querySelectorAll('#screen-q2 .q-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  addRipple(el);
+  setTimeout(() => startLoading(), 300);
+}
+
+// ── 리플 효과 ──
+function addRipple(el) {
+  const r = document.createElement('div');
+  r.className = 'ripple';
+  r.style.left = '50%';
+  r.style.top = '50%';
+  r.style.marginLeft = '-30px';
+  r.style.marginTop = '-30px';
+  el.appendChild(r);
+  setTimeout(() => r.remove(), 600);
+}
+
+// ── 로딩 ──
+function startLoading() {
+  goTo('screen-loading');
+  const texts = document.querySelectorAll('.loading-text');
+  let idx = 0;
+  texts.forEach(t => t.classList.remove('visible'));
+  texts[0].classList.add('visible');
+
+  const interval = setInterval(() => {
+    texts[idx].classList.remove('visible');
+    idx++;
+    if (idx < texts.length) {
+      texts[idx].classList.add('visible');
+    } else {
+      clearInterval(interval);
+      setTimeout(showResult, 400);
+    }
+  }, 700);
+}
+
+// ── 추천 로직: Q1+Q2 조합으로 랜덤 1곳 선택 ──
+function pickStore(q1, q2) {
+  const key = q1 + '-' + q2;
+  const pool = STORES[key] || [];
+  if (pool.length === 0) return null;
+  // 매 방문마다 다른 가게 추천 (랜덤)
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+// ── 카테고리 한글 변환 ──
+const catLabel = {
+  korean: '한식', japanese: '일식', meat: '고기구이', western: '양식',
+  rawfish: '회·해산물', chinese: '중식', etc_dining: '기타 다이닝',
+  sojuhouse: '요리주점', cocktail: '칵테일 바', izakaya: '이자카야',
+  beerhall: '호프·생맥주', winebar: '와인바', whiskybar: '위스키바',
+  bar_etc: '바·주점', cafe: '카페·베이커리', brunch: '브런치 카페',
+};
+
+// 1. 사용자 위치 가져오기
+function getUserLocation() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) return reject('GPS 미지원');
+    navigator.geolocation.getCurrentPosition(
+      pos => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      err => reject(err),
+      { enableHighAccuracy: true, timeout: 5000 }
+    );
+  });
+}
+
+// 2. 직선 거리 계산 (Haversine 공식)
+function getDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371000; // 지구 반지름 (m)
+  const toRad = deg => deg * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a = Math.sin(dLat/2)**2 +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function getWalkingTime(meters) {
+  const minutes = Math.round(meters / 67);
+  return minutes < 1 ? '1분 미만' : `약 ${minutes}분`;
+}
+
+function updateDistance(store) {
+  if (!userLocation || !store.lat || !store.lng) return '위치 정보 없음';
+  const dist = getDistance(userLocation.lat, userLocation.lng, store.lat, store.lng);
+  const distText = dist < 1000
+    ? `${Math.round(dist)}m`
+    : `${(dist/1000).toFixed(1)}km`;
+  return `도보 ${getWalkingTime(dist)} (${distText})`;
+}
+
+let currentStore = null;
+
+function showResult() {
+  currentStore = pickStore(q1, q2);
+  if (!currentStore) {
+    currentStore = { name: '추천 가게 준비 중', category: 'etc_dining',
+      review: '잠시 후 다시 시도해주세요.', price: '-', wait: '-', photo: '' };
+  }
+
+  document.getElementById('result-name').textContent = currentStore.name;
+  document.getElementById('result-category').textContent =
+    (catLabel[currentStore.category] || currentStore.category).toUpperCase() + ' · 광안리';
+  document.getElementById('result-quote').textContent = '"' + currentStore.review + '"';
+  document.getElementById('result-dist').textContent = updateDistance(currentStore);
+  document.getElementById('result-wait').textContent = currentStore.wait;
+  document.getElementById('result-price').textContent = currentStore.price;
+  document.getElementById('result-hours').textContent = '영업 중';
+
+  const photoEl = document.getElementById('result-photo');
+  if (currentStore.photo) {
+    photoEl.src = currentStore.photo;
+    photoEl.alt = currentStore.name;
+    photoEl.style.display = 'block';
+  } else {
+    photoEl.style.display = 'none';
+  }
+
+  // why 섹션: 한줄평 + 조합 근거
+  const moodMap = { '설레는 날': '분위기·감성 중심으로', '편안한 날': '편안하고 실속 있게', '특별한 날': '특별한 오늘에 맞게' };
+  const courseMap = { '1차': '식사 자리로', '2차': '2차 자리로', '3차+': '늦은 밤 자리로' };
+  const whyItems = [
+    currentStore.review,
+    `${q1} ${moodMap[q2] || ''} 추천한 ${pool_count()}개 중 선택했어요`,
+    `가격대 ${currentStore.price}, 예상 대기 ${currentStore.wait}`,
+  ];
+
+  const whyEl = document.getElementById('result-why-items');
+  whyEl.innerHTML = whyItems.map(w =>
+    `<div class="why-item"><div class="why-dot"></div><div class="why-text">${w}</div></div>`
+  ).join('');
+
+  goTo('screen-result');
+  const animEls = document.querySelectorAll('.result-animate');
+  animEls.forEach(el => el.classList.remove('in'));
+  setTimeout(() => {
+    animEls.forEach((el, i) => {
+      setTimeout(() => el.classList.add('in'), i * 120);
+    });
+  }, 200);
+}
+
+function pool_count() {
+  const key = q1 + '-' + q2;
+  return (STORES[key] || []).length;
+}
+
+// ── 지도 열기 ──
+function openMap() {
+  const query = encodeURIComponent(currentStore ? currentStore.name + ' 광안리' : '광안리 맛집');
+  window.open('https://map.naver.com/v5/search/' + query, '_blank');
+}
+
+// ── 다른 곳 추천 (같은 조합에서 다른 가게) ──
+function restart() {
+  if (q1 && q2) {
+    // 같은 조합에서 다른 가게 다시 추천
+    startLoading();
+  } else {
+    q1 = ''; q2 = '';
+    document.querySelectorAll('.q-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.result-animate').forEach(el => el.classList.remove('in'));
+    goTo('screen-intro');
+  }
+}
+
+// ── URL 파라미터로 Q2 자동 선택 (QR 포스터 연동) ──
+// QR-A: ?mood=romantic (설레는 날)
+// QR-B: ?mood=cozy     (편안한 날)
+// QR-C: ?mood=special  (특별한 날)
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const mood = params.get('mood');
+  const moodMap = {
+    'romantic': '설레는 날',
+    'cozy':     '편안한 날',
+    'special':  '특별한 날',
+  };
+  if (mood && moodMap[mood]) {
+    // Q2 자동 세팅 후 Q1 화면으로 바로 진입
+    q2 = moodMap[mood];
+
+    // 인트로 건너뛰고 Q1으로 바로
+    setTimeout(() => {
+      // 인트로 숨기고
+      document.getElementById('screen-intro').classList.remove('active');
+      // Q1 화면에 기분 뱃지 표시
+      const badge = document.createElement('div');
+      badge.style.cssText = `
+        position: fixed; top: 16px; right: 16px; z-index: 999;
+        background: #FF5C1A; color: white;
+        padding: 6px 14px; border-radius: 20px;
+        font-size: 12px; font-weight: 700;
+        font-family: 'Noto Sans KR', sans-serif;
+        box-shadow: 0 4px 12px rgba(255,92,26,0.4);
+      `;
+      badge.textContent = moodMap[mood] + ' 선택됨 ✓';
+      document.body.appendChild(badge);
+
+      // Q1 화면으로 전환
+      const q1Screen = document.getElementById('screen-q1');
+      q1Screen.classList.add('active');
+
+      // Q1 카드 클릭 시 Q2 건너뛰고 바로 로딩
+      document.querySelectorAll('#screen-q1 .q-card').forEach(card => {
+        card.addEventListener('click', () => {}, { once: false });
+      });
+    }, 100);
+
+    // selectQ1 함수 오버라이드: Q2 이미 세팅됐으면 바로 로딩
+    window._origSelectQ1 = window.selectQ1;
+    window.selectQ1 = function(val, el) {
+      q1 = val;
+      document.querySelectorAll('#screen-q1 .q-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      // 리플 효과
+      const r = document.createElement('div');
+      r.className = 'ripple';
+      r.style.left = '50%'; r.style.top = '50%';
+      r.style.marginLeft = '-30px'; r.style.marginTop = '-30px';
+      el.appendChild(r);
+      setTimeout(() => r.remove(), 600);
+      // Q2 이미 있으면 바로 로딩
+      setTimeout(() => startLoading(), 300);
+    };
+  }
+});
+
+
+// ══ 피드백 화면 ══
+function goFeedback() {
+  if (!currentStore) return;
+  document.getElementById('fb-store-name').textContent = currentStore.name;
+  goTo('screen-feedback');
+  setTimeout(() => {
+    document.querySelectorAll('#screen-feedback .result-animate').forEach((el,i) => {
+      setTimeout(() => el.classList.add('in'), i * 80);
+    });
+  }, 150);
+}
+
+let fbData = { visited: null, sat: null, reasons: [] };
+
+function visitYes() {
+  fbData.visited = true;
+  document.getElementById('fba-btns').style.display = 'none';
+  document.getElementById('sat-wrap').classList.add('show');
+  track('visit', { store: currentStore?.name, q1, q2, visited: true });
+}
+
+function visitNo() {
+  fbData.visited = false;
+  document.getElementById('fba-btns').style.display = 'none';
+  document.getElementById('reason-wrap').classList.add('show');
+  track('visit', { store: currentStore?.name, q1, q2, visited: false });
+}
+
+function selectSat(el, sat) {
+  fbData.sat = sat;
+  document.querySelectorAll('.sat-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  track('satisfaction', { store: currentStore?.name, q1, q2, sat });
+  setTimeout(() => {
+    if (sat !== '불만족') {
+      document.getElementById('insta-banner').classList.add('show');
+    } else {
+      showDone('다음엔 더 잘 맞춰드릴게요 💙', '😔');
+    }
+  }, 350);
+}
+
+function submitReasons() {
+  const selected = [...document.querySelectorAll('.rc.on')].map(e => e.textContent.trim());
+  fbData.reasons = selected;
+  track('no_visit_reasons', { store: currentStore?.name, q1, q2, reasons: selected });
+  showDone('의견 감사해요!\n다음엔 꼭 더 잘 맞춰드릴게요 🙏', '🙏');
+}
+
+function openInsta() {
+  const store = currentStore?.name || '';
+  window.open('https://www.instagram.com/', '_blank');
+  track('insta_click', { store, q1, q2 });
+  showDone('인스타 태그 감사해요! ☕\n매주 금요일 @ondo.guide에서 추첨 결과를 확인하세요.', '☕');
+}
+
+function showDone(msg, ej) {
+  document.getElementById('sat-wrap').classList.remove('show');
+  document.getElementById('reason-wrap').classList.remove('show');
+  document.getElementById('insta-banner').classList.remove('show');
+  document.getElementById('done-ej').textContent = ej;
+  document.getElementById('done-txt').innerHTML = msg.replace('\n','<br>');
+  document.getElementById('fb-done').classList.add('show');
+}
+
+// ── 이벤트 트래킹 (localStorage 누적) ──
+function track(evt, data) {
+  // localStorage 저장
+  try {
+    const log = JSON.parse(localStorage.getItem('ondo_log') || '[]');
+    log.push({ evt, data, ts: Date.now() });
+    if (log.length > 300) log.splice(0, log.length - 300);
+    localStorage.setItem('ondo_log', JSON.stringify(log));
+  } catch(e) {}
+  // Google Sheets 전송 (GAS_URL 설정 시 활성화)
+  sendToSheets(evt, data);
+  console.log('[ondo]', evt, data);
+}
+
+// 운영자 CSV 내보내기: 브라우저 콘솔에서 ondo_csv() 실행
+window.ondo_csv = function() {
+  const log = JSON.parse(localStorage.getItem('ondo_log') || '[]');
+  if (!log.length) { alert('데이터 없음'); return; }
+  const rows = [['시각','이벤트','가게','Q1','Q2','방문','만족도','미방문이유']];
+  log.forEach(({ evt, data: d, ts }) => {
+    rows.push([
+      new Date(ts).toLocaleString('ko-KR'), evt,
+      d.store||'', d.q1||'', d.q2||'',
+      d.visited != null ? (d.visited ? '방문함' : '방문안함') : '',
+      d.sat||'', (d.reasons||[]).join(' / '),
+    ]);
+  });
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'}));
+  a.download = `ondo_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  alert(log.length + '건 내보내기 완료!');
+};
+
+
+
+// 홈 버튼 초기 상태 세팅
+window.addEventListener('DOMContentLoaded', () => {
+  const activeScreen = document.querySelector('.screen.active');
+  const homeBtn = document.getElementById('home-btn');
+  if (homeBtn && activeScreen) {
+    homeBtn.classList.toggle('visible', activeScreen.id !== 'screen-intro');
+  }
+});
+
+// ── 처음으로 돌아가기 ──────────────────────────────────────
+function goHome() {
+  // 상태 전부 초기화
+  q1 = ''; q2 = '';
+  currentStore = null;
+  fbData = { visited: null, sat: null, reasons: [] };
+
+  // 피드백 화면 UI 초기화
+  const ids = ['fba-btns','sat-wrap','reason-wrap','insta-banner','fb-done'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.display = '';
+      el.classList.remove('show');
+    }
+  });
+  document.querySelectorAll('.sat-btn').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.rc').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.q-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.result-animate').forEach(el => el.classList.remove('in'));
+
+  // mood 파라미터가 있으면 Q2 자동 세팅 유지, 없으면 완전 초기화
+  const params = new URLSearchParams(window.location.search);
+  const mood = params.get('mood');
+  const moodMap = { romantic:'💕 설레는 날', cozy:'😌 편안한 날', special:'✨ 특별한 날' };
+  if (mood && moodMap[mood]) {
+    q2 = moodMap[mood];
+    goTo('screen-q1');
+  } else {
+    goTo('screen-intro');
+  }
+}
+
+// ── Google Sheets 연동 (배포 후 GAS URL 설정) ────────────────
+// 👉 Netlify 배포 후 Google Apps Script URL을 여기에 붙여넣으세요
+// 설정 방법: https://developers.google.com/apps-script
+const GAS_URL = '';  // 예: 'https://script.google.com/macros/s/ABC123.../exec'
+
+async function sendToSheets(evt, data) {
+  if (!GAS_URL) return;  // URL 없으면 스킵
+  try {
+    const payload = {
+      timestamp: new Date().toLocaleString('ko-KR'),
+      event: evt,
+      store: data.store || '',
+      q1: data.q1 || '',
+      q2: data.q2 || '',
+      visited: data.visited != null ? (data.visited ? '방문함' : '방문안함') : '',
+      satisfaction: data.sat || '',
+      reasons: (data.reasons || []).join(' / '),
+    };
+    // GAS는 CORS 제한이 있어 no-cors 모드로 전송
+    await fetch(GAS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch(e) {
+    console.warn('[ondo] Sheets 전송 실패:', e);
+  }
+}
+
+</script>
+</body>
+</html>
