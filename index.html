@@ -512,6 +512,20 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--cream); 
   max-height: 240px;
 }
 
+/* 결과 화면 탐색 버튼 */
+.btn-explore {
+  background: transparent;
+  color: var(--brown-2);
+  border: 1px solid var(--border-md);
+  border-radius: 3px;
+  padding: 14px 20px;
+  font-family: var(--ko); font-size: 13px; font-weight: 400;
+  cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  transition: background .18s; width: 100%;
+}
+.btn-explore:active { background: var(--cream-mid); }
+
 </style>
 </head>
 <body>
@@ -698,6 +712,10 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--cream); 
   <div class="res-cta result-animate" id="ra-cta">
     <button class="btn-map" onclick="openMap()">지금 바로 갈게요 <span>→</span></button>
     <button class="btn-feedback" onclick="goFeedback()">다녀온 후 피드백 남기기 <span style="font-size:11px;opacity:.5;">↗</span></button>
+    <button class="btn-explore" onclick="goExplore()">
+      <span>🗺 광안리 전체 맛집 탐색하기</span>
+      <span style="font-size:11px;opacity:.5;">→</span>
+    </button>
     <button class="btn-ghost" onclick="restart()">다른 곳 추천받기</button>
   </div>
 
@@ -1200,6 +1218,10 @@ function goHome() {
   } else {
     goTo('screen-intro');
   }
+}
+
+function goHome() {
+  window.location.href = "https://ondoguide.com";
 }
 
 // ── Google Sheets 연동 (배포 후 GAS URL 설정) ────────────────
